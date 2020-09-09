@@ -2,7 +2,7 @@
 
 1.- El proyecto consta de dos aplicaciones:
     main (Gestiona la lógica de datos)
-    files (Consulta y exporta ficheros .txt)
+    files (Consulta y exporta ficheros .txt).
     
 ## RUN SERVER LOCAL
 
