@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}Profesores{% endblock %}
+
+{% block breadcumb-link %}{% endblock %}
+{% block breadcumb-content %}Todos{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h3 class="card-title">{% block title-breadcumb %}Profesores{% endblock %}</h3>
+                </div>
+{#                <div class="col-sm-4">#}
+{#                    <a href="#" type="button"#}
+{#                       class="btn btn-sm btn-primary float-right text-uppercase">#}
+{#                        Crear#}
+{#                    </a>#}
+{#                </div>#}
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table id="table-teachers" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Nombres</th>
+                    <th>Alias</th>
+                    <th class="text-center">Opciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in teachers %}
+                    <tr>
+                        <td>{{ obj.pk }}</td>
+                        <td>{{ obj.full_name }}</td>
+                        <td>{{ obj.alias }}</td>
+                        <td class="text-nowrap">
+{#                            <a href="#" data-toggle="tooltip"#}
+                            {#                               data-original-title="Editar">#}
+                            {#                                <i class="fas fa-edit" style="margin-right: 15px"></i>#}
+                            {#                            </a>#}
+                            <a href="{% url 'main:delete-teachers' obj.pk %}" data-toggle="tooltip"
+                               data-original-title="Eliminar" class="text-center">
+                                <i class="fas fa-trash text-danger" style="margin-right: 15px"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        $(function () {
+            $("#table-teachers").DataTable({
+                "responsive": true,
+                "autoWidth": false,
+                "language": {
+                    "lengthMenu": "Muesta _MENU_ registros por página",
+                    "zeroRecords": "Lo siento no existen registros",
+                    "info": "Mostrando página _PAGE_ de _PAGES_",
+                    "infoEmpty": "No tiene registros disponibles",
+                    "infoFiltered": "(filtered from _MAX_ total records)",
+                    "search": "Búsqueda",
+                    "previous": "Anterior",
+                    "paginate": {
+                        "previous": "Anterior",
+                        "next": "Siguiente"
+                    }
+                },
+
+            });
+        });
+    </script>
+{% endblock %}

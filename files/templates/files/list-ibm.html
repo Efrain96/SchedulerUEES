@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+{% block title %}Planificaciones{% endblock %}
+
+{% block breadcumb-link %}{% endblock %}
+{% block breadcumb-content %}IBM{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h3 class="card-title">{% block title-breadcumb %}IBMs{% endblock %}</h3>
+                </div>
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th class="text-center">Periodo</th>
+                    <th class="text-center">Carrera</th>
+                    <th class="text-center text-uppercase">Documentos Txt</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for plan in planns %}
+                    <tr>
+                        <td>{{ plan.pk }}</td>
+                        <td>{{ plan.term }}</td>
+                        <td>{{ plan.career }}</td>
+
+                        <td>
+                            <a class="btn btn-app bg-secondary verified"
+                               data-toggle="modal"
+                               data-id="{{ plan.pk }}"
+                               data-format="AfinAulas"
+                               data-target="#modal-lg"
+                            >
+                                <i class="fas fa-users"></i> Afin Aulas
+                            </a>
+                            <a class="btn btn-app bg-secondary verified"
+                               data-toggle="modal"
+                               data-id="{{ plan.pk }}"
+                               data-format="CantMatProfes"
+                               data-target="#modal-lg"
+                            >
+                                <i class="fas fa-user"></i> Materias Profesores
+                            </a>
+                            <a class="btn btn-app bg-secondary verified"
+                               data-toggle="modal"
+                               data-id="{{ plan.pk }}"
+                               data-format="CantParalelos"
+                               data-target="#modal-lg"
+                            >
+                                <i class="fas fa-door-open"></i> Paralelos
+                            </a>
+                            <a class="btn btn-app bg-secondary verified"
+                               data-toggle="modal"
+                               data-id="{{ plan.pk }}"
+                               data-format="DispProfes"
+                               data-target="#modal-lg"
+                            >
+                                <i class="far fa-clock"></i>
+                                Disp. Profesores
+                            </a>
+                            <a class="btn btn-app bg-secondary verified"
+                               data-toggle="modal"
+                               data-id="{{ plan.pk }}"
+                               data-format="Jornada"
+                               data-target="#modal-lg"
+                            >
+                                <i class="fas fa-calendar-day"></i>Jornada
+                            </a>
+                            <a class="btn btn-app bg-secondary verified"
+                               data-toggle="modal"
+                               data-id="{{ plan.pk }}"
+                               data-format="MatCar"
+                               data-target="#modal-lg"
+                            >
+                                <i class="fas fa-graduation-cap"></i>Materias Carreras
+                            </a>
+                            <a class="btn btn-app bg-secondary verified"
+                               data-toggle="modal"
+                               data-id="{{ plan.pk }}"
+                               data-format="MatNiv"
+                               data-target="#modal-lg"
+                            >
+                                <i class="fas fa-sort-amount-up-alt"></i> Materias Nivel
+                            </a>
+                            <a class="btn btn-app bg-secondary verified"
+                               data-toggle="modal"
+                               data-id="{{ plan.pk }}"
+                               data-format="ParAulas"
+                               data-target="#modal-lg"
+                            >
+                                <i class="fas fa-school"></i>Paralelo Aulas
+                            </a>
+                            <a class="btn btn-app secondary verified"
+                               data-toggle="modal"
+                               data-id="{{ plan.pk }}"
+                               data-format="Profes"
+                               data-target="#modal-lg"
+                            >
+                                <i class="fas fa-chalkboard-teacher"></i> Profesores
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+    <div class="modal fade" id="modal-lg">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-uppercase">Generación document para IBM</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Está seguro de generar el documento <strong class="target-select"></strong>?</p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <form method="post" action="{% url 'files:generate-ibm' %}" id="form-confirm">{% csrf_token %}
+
+                        <input type="text" hidden name="id"/>
+                        <input type="text" hidden name="format"/>
+
+                        <button type="submit" class="btn btn-primary text-uppercase confirm-button">Continuar</button>
+                        <button type="button" class="btn btn-default text-uppercase cancel-button">Cancelar
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        $(function () {
+
+            $('.verified').click(function () {
+                const id = $(this).attr('data-id');
+                const format = $(this).attr('data-format');
+                $('#form-confirm').find('input[name=id]').val(id);
+                $('#form-confirm').find('input[name=format]').val(format);
+            });
+
+            $('.cancel-button').click(function () {
+                location.reload();
+            });
+
+
+            $("#example1").DataTable({
+                "responsive": true,
+                "autoWidth": false,
+                "language": {
+                    "lengthMenu": "Muesta _MENU_ registros por página",
+                    "zeroRecords": "Lo siento no existen registros",
+                    "info": "Mostrando página _PAGE_ de _PAGES_",
+                    "infoEmpty": "No tiene registros disponibles",
+                    "infoFiltered": "(filtered from _MAX_ total records)",
+                    "search": "Búsqueda",
+                    "previous": "Anterior",
+                    "paginate": {
+                        "previous": "Anterior",
+                        "next": "Siguiente"
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

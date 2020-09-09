@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block title %}Planificaciones{% endblock %}
+
+{% block breadcumb-link %}{% endblock %}
+{% block breadcumb-content %}Todos{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h3 class="card-title">{% block title-breadcumb %}Planificaciones{% endblock %}</h3>
+                </div>
+            </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table id="example1" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>No.</th>
+                    <th class="text-center">Periodo</th>
+                    <th class="text-center">Carrera</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-center">Opciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for plan in planns %}
+                    <tr>
+                        <td>{{ plan.pk }}</td>
+                        <td>{{ plan.term }}</td>
+                        <td>{{ plan.career }}</td>
+                        <td class="text-center">
+                            {% if plan.state %}
+                                <span class="badge badge-success text-uppercase">VERIFICADO</span>
+                            {% else %}
+                                <span class="badge badge-warning text-uppercase">BORRADOR</span>
+                            {% endif %}
+                        </td>
+                        <td class="project-actions text-right">
+                            <a class="btn btn-primary btn-sm" href="{% url 'main:detail-scheduler' plan.pk %}">
+                                <i class="fas fa-folder"></i> Detalle
+                            </a>
+                            {% if plan.state is False %}
+                                <button type="button"
+                                        class="btn btn-success btn-sm verified"
+                                        id="button-{{ plan.pk }}"
+                                        data-toggle="modal"
+                                        data-id="{{ plan.pk }}"
+                                        data-target="#modal-lg">
+                                    <i class="fas fa-check"></i> Verificar
+                                </button>
+                                <a class="btn btn-info btn-sm"
+                                   href="{% url 'main:edit-scheduler' plan.pk %}">
+                                    <i class="fas fa-pencil-alt"></i> Editar
+                                </a>
+                            {% endif %}
+                            <a class="btn btn-danger btn-sm" href="{% url 'main:delete-scheduler' plan.id %}">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card-body -->
+    </div>
+    <!-- /.card -->
+    <div class="modal fade" id="modal-lg">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title text-uppercase">Verificar</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Está seguro de confirmar el registro de la planificación?</p>
+                    <p><strong>Recuerde que una vez confirmada la planificación, no se permite modificar.</strong></p>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <form method="post" action="{% url 'main:verified-scheduler' %}" id="form-confirm">{% csrf_token %}
+                        <input type="text" hidden name="id"/>
+                        <button type="submit" class="btn btn-primary text-uppercase confirm-button">Continuar</button>
+                        <button type="button" class="btn btn-default text-uppercase" data-dismiss="modal">Cancelar
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        $(function () {
+
+            $('.verified').click(function () {
+                let id = $(this).attr('data-id');
+                $('#form-confirm').find('input[name=id]').val(id);
+            });
+
+            $('.confirm-button').click(function () {
+                $('#form-confirm').submit();
+            });
+
+            $("#example1").DataTable({
+                "responsive": true,
+                "autoWidth": false,
+                "language": {
+                    "lengthMenu": "Muesta _MENU_ registros por página",
+                    "zeroRecords": "Lo siento no existen registros",
+                    "info": "Mostrando página _PAGE_ de _PAGES_",
+                    "infoEmpty": "No tiene registros disponibles",
+                    "infoFiltered": "(filtered from _MAX_ total records)",
+                    "search": "Búsqueda",
+                    "previous": "Anterior",
+                    "paginate": {
+                        "previous": "Anterior",
+                        "next": "Siguiente"
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

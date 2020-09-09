@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalle Planificación{% endblock %}
+{% block breadcumb-link %}{% url 'main:list-scheduler' %}{% endblock %}
+{% block breadcumb-content %}Todos{% endblock %}
+{% block title-breadcumb %}Detalle{% endblock %}
+
+{% block content %}
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="callout callout-info">
+                        {% if object.state %}
+                            <h5><i class="fas fa-check"></i> Estado:
+                                Planificación APROBADA/VERIFICADA, puede generar los archivos IBM.
+                            </h5>
+                        {% else %}
+                            <h5><i class="fas fa-info"></i> Estado:
+                                Planificación en BORRADOR, es decir debe ser verificada y puede ser adminitrada.
+                            </h5>
+                        {% endif %}
+                    </div>
+                    <!-- Main content -->
+                    <div class="invoice p-3 mb-3">
+                        <!-- title row -->
+                        <div class="row">
+                            <div class="col-12">
+                                <h4>
+                                    <i class="far fa-clock"></i>{{ object.id }} - {{ object }}
+                                    <small class="float-right">{{ object.created|date:"d/m/Y" }}</small>
+                                </h4>
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                        <!-- info row -->
+                        <div class="row invoice-info">
+                            <div class="col-sm-4 invoice-col">
+                                Periodo
+                                <address>
+                                    <strong>{{ object.term }}</strong>
+                                </address>
+                            </div>
+                            <!-- /.col -->
+                            <div class="col-sm-4 invoice-col">
+                                Carrera
+                                <address>
+                                    <strong>{{ object.career }}</strong>
+                                </address>
+                            </div>
+                            <!-- /.col -->
+                            <div class="col-sm-4 invoice-col">
+                                Malla
+                                <address>
+                                    <strong>{{ object.mesh }}</strong>
+                                </address>
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+
+                        <!-- Table row -->
+                        <div class="row">
+                            <div class="col-12 table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Materia</th>
+                                        <th>Paralelo</th>
+                                        <th>Aula</th>
+                                        <th class="text-center">Profesor(a)</th>
+                                        <th class="text-center">Horario</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for item in items %}
+                                        <tr>
+                                            <td>{{ item.subject }}</td>
+                                            <td>{{ item.parallel|default_if_none:"" }}</td>
+                                            <td>{{ item.classroom }}</td>
+                                            <td class="text-center">{{ item.teacher }}</td>
+                                            <td class="text-center">
+                                                {{ item.start_day|upper|default_if_none:"" }} {{ item.start_time|default_if_none:"" }}-{{ item.end_time|default_if_none:"" }}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+
+                    </div>
+                    <!-- /.invoice -->
+                </div><!-- /.col -->
+
+            </div><!-- /.row -->
+            <div class="row">
+                <div class="float-right py-2">
+                    <a href="{% url 'main:list-scheduler' %}" type="button" class="btn btn-secondary">
+                        REGRESAR
+                    </a>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+{% endblock %}

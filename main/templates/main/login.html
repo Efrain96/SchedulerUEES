@@ -1,0 +1,77 @@
+{% extends 'account/base.html' %}
+{% load static widget_tweaks %}
+
+{% block title %}Inicio de sesión - UEES{% endblock %}
+
+{% block styleseet %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+    <main class="d-flex align-items-center min-vh-100 py-3 py-md-0">
+        <div class="container">
+            <div class="card login-card">
+                <div class="row no-gutters">
+                    <div class="col-md-5">
+                        <img src="{% static 'images/login.jpg' %}" alt="login" class="login-card-img">
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card-body">
+                            <div class="brand-wrapper">
+                                <img src="{% static 'images/logo-uees.png' %}" alt="logo" class="logo">
+                            </div>
+                            <div class="login-card-description">Inicia sesión en tu cuenta</div>
+
+                            <small class="message-center danger">
+
+                                {% if form.errors %}
+                                    {% for field in form %}
+                                        {% for error in field.errors %}
+                                            <div class="alert alert-danger">
+                                                <strong>{{ error|escape }}</strong>
+                                            </div>
+                                        {% endfor %}
+                                    {% endfor %}
+                                    {% for error in form.non_field_errors %}
+                                        <div class="alert alert-danger">
+                                            <strong>{{ error|escape }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                {% endif %}
+                            </small>
+
+                            <form method="post" id="login" action="{% url 'main:login' %}">{% csrf_token %}
+
+                                {% for field in form.visible_fields %}
+                                    <div class="form-group">
+                                        {{ field.label_tag }}
+                                        {% render_field field class="form-control" %}
+                                    </div>
+                                {% endfor %}
+
+                                <div id="alertas" style="display: none"></div>
+                                <input
+                                        name="login"
+                                        id="iniciar"
+                                        class="btn btn-block login-btn mb-4"
+                                        type="submit"
+                                        value="Iniciar Sesion"/>
+                            </form>
+
+                            <a href="#"
+                               onclick="contacto()"
+                               class="forgot-password-link">
+                                Olvidaste tu contraseña?
+                            </a>
+                            <div id="alertas"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+{% block extra_js %}
+{% endblock %}
+

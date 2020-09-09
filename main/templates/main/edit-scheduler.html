@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static widget_tweaks %}
+{% block title %}Planificación{% endblock %}
+
+{% block breadcumb-link %}{% url 'main:list-scheduler' %}{% endblock %}
+{% block breadcumb-content %}Todos{% endblock %}
+{% block title-breadcumb %}Editar{% endblock %}
+
+{% block styleseet %}
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+{% endblock %}
+
+
+{% block content %}
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card card-default">
+                <div class="card-header">
+                    <h3 class="card-title text-uppercase text-bold">
+                        Información Básica
+                    </h3>
+                </div>
+                <!-- /.card-header -->
+                <form action="." method="post">{% csrf_token %}
+                    <div class="card-body">
+                        <div class="row">
+                            {% for field in form.visible_fields %}
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        {{ field.label }}
+                                        {% render_field field %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- formset -->
+                        {{ formset.management_form }}
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title font-weight-bold text-uppercase">Detalle planificación</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body p-0">
+                                <table class="table table-striped" id="table-formset">
+                                    <thead>
+                                    <tr>
+                                        <th>Materia</th>
+                                        <th>Profesor</th>
+                                        <th>Aula</th>
+                                        <th>Paralelo</th>
+                                        <th>Día</th>
+                                        <th>Hora Ini.</th>
+                                        <th>Hora Fin</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for item in formset %}
+                                        <tr class="row-table">
+                                            {{ item.id }}
+                                            <td style="width: 20%">{{ item.subject|add_class:"select2" }}</td>
+                                            <td style="width: 20%">{{ item.teacher|add_class:"select2" }}</td>
+                                            <td>{{ item.classroom|add_class:"select2" }}</td>
+                                            <td>{{ item.parallel|add_class:"select2" }}</td>
+                                            <td style="width: 120px">{{ item.start_day|add_class:"form-control" }}</td>
+                                            <td style="width: 220px">{{ item.start_time }}</td>
+                                            <td style="width: 220px">{{ item.end_time }}</td>
+                                            <td>
+                                                <button type="button" class="remove-item btn btn-xs bg-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                                <button type="button" class="btn-sm btn-primary m-2" id="add-item">
+                                    <i class="fa fa-plus-square"></i>
+                                    Agregar Item
+                                </button>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+
+                    </div>
+
+                    <div class="float-right py-2">
+                        <input type="submit" value="EDITAR"
+                               class="btn btn-primary text-uppercase mb-2 mr-3"/>
+                        <a type="button"
+                           class="text-uppercase btn waves-effect waves-light btn-secondary mb-2 mr-2"
+                           href="{% url 'main:list-scheduler' %}">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+
+    <script type="application/javascript">
+        $(function () {
+            // Initialize Select2 Elements
+            const timepickerConfig = {
+                timeFormat: 'h:mm p',
+                minTime: '07',
+                maxTime: '8:00pm',
+                dynamic: true,
+                dropdown: true,
+                scrollbar: true
+            };
+            //Initialize Select2 Elements
+            $('.select2').select2()
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+            $('#id_term').select2({
+                placeholder: "Seleccione periodo",
+                allowClear: true
+            });
+            $('#id_career').select2({
+                placeholder: "Seleccione la carrera",
+                allowClear: true
+            });
+            $('.timepicker').timepicker(timepickerConfig);
+
+            $(document).on('click', '#add-item', function (e) {
+                e.preventDefault();
+                $('.row-table:last').find('select').select2('destroy');
+                $('.row-table:last').find('.timepicker').timepicker('destroy');
+
+                cloneMore('.row-table:last', 'scheduler-detail');
+
+                $('.row-table:last').find('select').select2();
+                $('.row-table:last').find('.timepicker').timepicker(timepickerConfig);
+                return false;
+            });
+
+            $(document).on('click', '.remove-item', function (e) {
+                e.preventDefault();
+                removeItem($(this), "scheduler-detail");
+                return false;
+            });
+
+        });
+    </script>
+{% endblock %}
