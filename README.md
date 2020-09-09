@@ -10,7 +10,7 @@
 - Instalar pipenv
 - Acceder al directorio principal del proyecto, para instalar todas las dependencias del proyecto
     
-    `$ cd /schedullerUEER`
+    `$ cd /schedullerUEES`
 
 - Ejecutar el comando para instalar dependencias:
     `$ pipenv install`
